@@ -2,16 +2,12 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # take environment variables from .env.
+
+# take environment variables from .env.
+load_dotenv()
 
 
-# client = OpenAI()
-
-
-# defaults to getting the key using os.environ.get("OPENAI_API_KEY")
-# if you saved the key under a different environment variable name, you can do something like:
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
 completion = client.chat.completions.create(
   model="gpt-3.5-turbo",
   messages=[
@@ -22,3 +18,7 @@ completion = client.chat.completions.create(
 
 print(completion.choices[0].message)
 print(completion.choices[0].message.content)
+print(f'model: {completion.model}')
+print(f'completion_tokens: {str(completion.usage.completion_tokens)}')
+print(f'prompt_tokens: {str(completion.usage.prompt_tokens)}')
+print(f'total_tokens: {str(completion.usage.total_tokens)}')
