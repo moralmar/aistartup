@@ -30,6 +30,6 @@ streamlit hello >> check in Terminal
 
 pip install --upgrade openai
 
-
+pip install python-dotenv
 
 """
