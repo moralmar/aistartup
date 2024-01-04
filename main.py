@@ -26,4 +26,10 @@ pip freeze > requirements.txt
 
 pip install streamlit
 streamlit hello >> check in Terminal
+
+
+pip install --upgrade openai
+
+
+
 """
