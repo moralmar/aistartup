@@ -9,7 +9,7 @@ load_dotenv()
 # ----------------------------
 # ------- App Settings -------
 # ----------------------------
-MODUS_IS_DEVELOPMENT = True
+MODUS_IS_DEVELOPMENT = False
 
 
 def add_divider():
@@ -49,6 +49,7 @@ with st.sidebar:
         st.write('')
     # Overwriting Section
     prompt_addition = st.text_input('Prompt Addition', 'and btw, what is 1 + 3?')
+    prompt_addition = ' ' + prompt_addition
 
 
 # -------------------------
@@ -69,7 +70,7 @@ if prompt := st.chat_input():
         st.stop()
 
     client = OpenAI(api_key=openai_api_key)
-    st.session_state.messages.append({"role": "user", "content": prompt + ' ' + prompt_addition})
+    st.session_state.messages.append({"role": "user", "content": prompt + prompt_addition})
     st.chat_message("user").write(prompt)
     # -------------------------------------------------------
     # ------- Waiting here - Waiting for API-Response -------
@@ -85,7 +86,7 @@ with st.sidebar:
     # --------------------------------
     # ------- Message Overview -------
     # --------------------------------
-    st.header('Message Overview', divider='rainbow')
+    st.header('Message Overview', divider='violet')
 
     with st.expander("Latest [-1] saved MESSAGE - in SessionState:'"):
         st.write(st.session_state["messages"][-1])
@@ -100,11 +101,11 @@ with st.sidebar:
     # ------- API Response -------
     # ----------------------------
     try:
-        response
+        # response
         str_length_choices = len(response.choices)
         str_completion_tokens = response.usage.completion_tokens
-        str_prompt_tokens = response.usage.str_prompt_tokens
-        str_total_tokens = response.usage.str_total_tokens
+        str_prompt_tokens = response.usage.prompt_tokens
+        str_total_tokens = response.usage.total_tokens
     except NameError:
         # if not response_exists:
         str_length_choices = '-'
@@ -112,7 +113,12 @@ with st.sidebar:
         str_prompt_tokens = '-'
         str_total_tokens = '-'
 
-    st.write('Length of Response Choices: ', str_length_choices)
+    st.write('')
+    st.header('Tokens of the last API-Call:', divider='violet')
     st.write('completion_tokens: ', str_completion_tokens)
     st.write('prompt_tokens: ', str_prompt_tokens)
     st.write('total_tokens: ', str_total_tokens)
+    st.write('')
+    st.header('Quality Checks / Expectations:', divider='violet')
+    st.write('Length of Response Choices (expected to be 1): ', str_length_choices)
+
