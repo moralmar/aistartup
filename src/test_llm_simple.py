@@ -1,6 +1,13 @@
 from openai import OpenAI
 import streamlit as st
+import os
+from dotenv import load_dotenv
 
+
+# take environment variables from .env.
+load_dotenv()
+
+MODUS_IS_DEVELOPMENT = True
 
 def add_divider():
     st.write('')
@@ -13,11 +20,13 @@ if "messages" not in st.session_state:
 
 
 with st.sidebar:
-    st.header('Input Settings', divider='rainbow')
+    st.header('Input Settings', divider='violet')  # rainbow
     # ------------------------
     # ------- Settings -------
     # ------------------------
     openai_api_key = st.text_input("OpenAI API Key", key="chat_bot_api_key", type="password")
+    if MODUS_IS_DEVELOPMENT:
+        openai_api_key = os.environ.get("OPENAI_API_KEY")
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
     with st.expander("Further Input Settings:"):
         model_selected = st.selectbox(
