@@ -18,16 +18,6 @@ def add_divider():
     st.write('')
 
 
-# --------------------------------
-# ------- Initial Messages -------
-# --------------------------------
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "assistant", "content": "How can I help you?"},
-]
-
-
 with st.sidebar:
     st.header('Input Settings', divider='violet')  # rainbow
     # ------------------------
@@ -41,15 +31,30 @@ with st.sidebar:
         model_selected = st.selectbox(
             'Models available',
             ('gpt-3.5-turbo', 'tbd', 'tbd'))
-        st.write('Model selected:', model_selected)
+        st.write('Model selected: ', model_selected)
         add_divider()
         model_selected = st.selectbox(
             'Other Setting',
             ('aaa', 'bbb', 'ccc'))
+        add_divider()
+        temperature = st.slider('Temperature (not yet live)', 0.0, 1.0, 0.0, 0.1)
+        st.write("Temperature: ", temperature)
         st.write('')
     # Overwriting Section
     prompt_addition = st.text_input('Prompt Addition', 'and btw, what is 1 + 3?')
     prompt_addition = ' ' + prompt_addition
+
+
+# --------------------------------
+# ------- Initial Messages -------
+# --------------------------------
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "assistant", "content": "How can I help you?"},
+    ]
+    # "temperature": 0.7
+    # st.session_state["temperature"] = temperature
 
 
 # -------------------------
@@ -121,4 +126,3 @@ with st.sidebar:
     st.write('')
     st.header('Quality Checks / Expectations:', divider='violet')
     st.write('Length of Response Choices (expected to be 1): ', str_length_choices)
-
