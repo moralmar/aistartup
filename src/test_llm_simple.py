@@ -18,8 +18,14 @@ def add_divider():
     st.write('')
 
 
+# --------------------------------
+# ------- Initial Messages -------
+# --------------------------------
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+    st.session_state["messages"] = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "assistant", "content": "How can I help you?"},
+]
 
 
 with st.sidebar:
@@ -43,6 +49,8 @@ with st.sidebar:
         st.write('')
     # Overwriting Section
     prompt_addition = st.text_input('Prompt Addition', 'and btw, what is 1 + 3?')
+
+
 # -------------------------
 # ------- Main Page -------
 # -------------------------
@@ -61,7 +69,7 @@ if prompt := st.chat_input():
         st.stop()
 
     client = OpenAI(api_key=openai_api_key)
-    st.session_state.messages.append({"role": "user", "content": prompt + prompt_addition})
+    st.session_state.messages.append({"role": "user", "content": prompt + ' ' + prompt_addition})
     st.chat_message("user").write(prompt)
     # -------------------------------------------------------
     # ------- Waiting here - Waiting for API-Response -------
@@ -78,10 +86,12 @@ with st.sidebar:
     # ------- Message Overview -------
     # --------------------------------
     st.header('Message Overview', divider='rainbow')
-    st.write('Latest [-1] saved MESSAGE - in SessionState:')
-    st.write(st.session_state["messages"][-1])
-    st.write('The following goes into the API call as message:')
-    with st.expander("Current SessionState - MESSAGES"):
+
+    with st.expander("Latest [-1] saved MESSAGE - in SessionState:'"):
+        st.write(st.session_state["messages"][-1])
+
+    with st.expander("Current SessionState - ALL MESSAGES"):
+        st.write('The following goes into the API call as message:')
         st.write(st.session_state["messages"])
         st.write('The above, plus the input-PROMPT, goes into the API-call. Looks like:')
         prompt_form = {"role": "user", "content": "<<prompt>>"}
@@ -89,7 +99,20 @@ with st.sidebar:
     # ----------------------------
     # ------- API Response -------
     # ----------------------------
-    st.write('Length of Response Choices: ', len(response.choices))
-    st.write('completion_tokens: ', len(response.usage.completion_tokens))
-    st.write('prompt_tokens: ', len(response.usage.prompt_tokens))
-    st.write('total_tokens: ', len(response.usage.total_tokens))
+    try:
+        response
+        str_length_choices = len(response.choices)
+        str_completion_tokens = response.usage.completion_tokens
+        str_prompt_tokens = response.usage.str_prompt_tokens
+        str_total_tokens = response.usage.str_total_tokens
+    except NameError:
+        # if not response_exists:
+        str_length_choices = '-'
+        str_completion_tokens = '-'
+        str_prompt_tokens = '-'
+        str_total_tokens = '-'
+
+    st.write('Length of Response Choices: ', str_length_choices)
+    st.write('completion_tokens: ', str_completion_tokens)
+    st.write('prompt_tokens: ', str_prompt_tokens)
+    st.write('total_tokens: ', str_total_tokens)
