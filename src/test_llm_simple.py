@@ -6,8 +6,11 @@ from dotenv import load_dotenv
 
 # take environment variables from .env.
 load_dotenv()
-
+# ----------------------------
+# ------- App Settings -------
+# ----------------------------
 MODUS_IS_DEVELOPMENT = True
+
 
 def add_divider():
     st.write('')
@@ -38,7 +41,8 @@ with st.sidebar:
             'Other Setting',
             ('aaa', 'bbb', 'ccc'))
         st.write('')
-
+    # Overwriting Section
+    prompt_addition = st.text_input('Prompt Addition', 'and btw, what is 1 + 3?')
 # -------------------------
 # ------- Main Page -------
 # -------------------------
@@ -49,12 +53,15 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 if prompt := st.chat_input():
+    # -------------------------------------------------------
+    # ------- Waiting here - Waiting for API-Response -------
+    # -------------------------------------------------------
     if not openai_api_key:
         st.info("Please add your OpenAI API key to continue.")
         st.stop()
 
     client = OpenAI(api_key=openai_api_key)
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state.messages.append({"role": "user", "content": prompt + prompt_addition})
     st.chat_message("user").write(prompt)
     # -------------------------------------------------------
     # ------- Waiting here - Waiting for API-Response -------
@@ -79,3 +86,10 @@ with st.sidebar:
         st.write('The above, plus the input-PROMPT, goes into the API-call. Looks like:')
         prompt_form = {"role": "user", "content": "<<prompt>>"}
         st.write(prompt_form)
+    # ----------------------------
+    # ------- API Response -------
+    # ----------------------------
+    st.write('Length of Response Choices: ', len(response.choices))
+    st.write('completion_tokens: ', len(response.usage.completion_tokens))
+    st.write('prompt_tokens: ', len(response.usage.prompt_tokens))
+    st.write('total_tokens: ', len(response.usage.total_tokens))
